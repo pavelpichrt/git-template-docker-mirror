@@ -1,0 +1,6 @@
+{
+  "project": {
+    "type": "docker",
+    "subtype": "mirror"
+  }
+}

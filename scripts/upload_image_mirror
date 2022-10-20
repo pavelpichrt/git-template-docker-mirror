@@ -1,0 +1,68 @@
+#!/bin/bash
+
+secret=$(aws secretsmanager get-secret-value --secret-id "/resources/docker-hub" | jq -r '.SecretString' | jq .)
+# major_version="14"
+
+# If auth is required in the future: https://hub.docker.com/support/doc/how-do-i-authenticate-with-the-v2-api
+
+if [[ ! -z "$secret" ]];
+then
+    echo "CHANGE ME!"
+    
+    # username=$(echo "$secret" | jq -r '.username')
+    # password=$(echo "$secret" | jq -r '.password')
+    
+    # latest_tag=""
+    # next_page="https://hub.docker.com/v2/repositories/$SOURCE_IMAGE/tags?page_size=100"
+    
+    # # Fetch latest tag
+    # while [[ "$latest_tag" = "" && "$next_page" != null ]]
+    # do
+    #     curl -s "$next_page" > dockerhub_response
+    
+    #     next_page=$(cat dockerhub_response | jq -r '.next')
+    
+    #     for row in $(cat dockerhub_response | jq -r '.results[] | @base64'); do
+    #         _jq() {
+    #             echo ${row} | base64 --decode | jq -r ${1}
+    #         }
+    
+    #         tag=$(_jq '.name')
+    
+    #         # We're looking for $major_version.x.x-alpine3.x
+    #         if [[ "$tag" =~ ^$major_version\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\-alpine3\.[0-9]+$ ]];
+    #         then
+    #             latest_tag="$tag"
+    #             break
+    #         fi
+    #     done
+    # done
+    
+    # if [[ ! -z "$latest_tag" ]];
+    # then
+    #     set -e
+    
+    #     printf "\nLogging in to DockerHub as '$username'\n---\n"
+    #     echo "$password" | docker login --username "$username" --password-stdin
+    
+    #     printf "\nDownloading latest tag for major version $major_version: $latest_tag\n---\n"
+    #     docker pull $SOURCE_IMAGE:$latest_tag
+    
+    #     printf "\nLogging in to ECR\n---\n"
+    #     aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+    
+    #     printf "\nPushing tags\n---\n"
+    #     docker tag $SOURCE_IMAGE:$latest_tag $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$latest_tag
+    #     docker tag $SOURCE_IMAGE:$latest_tag $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+    #     docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$latest_tag
+    #     docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+    
+    # else
+    #     echo "Could not resolve the latest tag"
+    #     exit 1
+    # fi
+    
+else
+    printf "\nFailed to fetch credentials\n\n"
+    exit 1
+fi
